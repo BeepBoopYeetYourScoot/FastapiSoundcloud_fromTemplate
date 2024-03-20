@@ -24,8 +24,7 @@ class TestConfig(Config):
     READER_DB_URL: str = "mysql+aiomysql://fastapi:fastapi@localhost:3306/fastapi_test"
 
 
-class LocalConfig(Config):
-    ...
+class LocalConfig(Config): ...
 
 
 class ProductionConfig(Config):
