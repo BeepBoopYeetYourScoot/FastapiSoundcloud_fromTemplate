@@ -1,226 +1,33 @@
-# FastAPI Boilerplate
+# MixInTune_Django
 
-# Features
-- Async SQLAlchemy session
-- Custom user class
-- Dependencies for specific permissions
-- Celery
-- Dockerize(Hot reload)
-- Event dispatcher
-- Cache
+Пет-проект: Помощник для составления плейлистов, v.1.1:
+- Проект переведён с FastAPI на Django по причине обеспечиваемой Django модульности приложения
 
-## Run
+# Проблема:
 
-### Launch docker
-```shell
-> docker-compose -f docker/docker-compose.yml up
-```
+- У меня достаточно обширная библиотека хорошей музыки
+- Мне всегда не хватает разнообразия в музыке, потому что новое заслушиваю до дыр
+- Миксовать плейлисты вручную по куче параметров не хватает скилла
+- Музыка должна подходить по темпу, тональности и другим параметрам
 
-### Install dependency
-```shell
-> poetry shell
-> poetry install
-```
+# Решение:
 
-### Apply alembic revision
-```shell
-> alembic upgrade head
-```
+- Самописный сервис, который будет помогать мне подбирать музыку и сортировать плейлисты
+- Плейлисты хорошо реализовать на рандомных выборках, чтобы была возможность расширяться по параметрам плейлистов
+- Колесо Камелота является в данном случае опорой для всех сортировок
 
-### Run server
-```shell
-> python3 main.py --env local|dev|prod --debug
-```
+# Пользовательская составляющая (в реализации)
 
-### Run test codes
-```shell
-> make test
-```
+1. Сортировка происходит на плейлистах Soundcloud
+2. Можно настроить технологию генерации плейлиста динамически
+3. Можно просматривать схожие треки, выбрав тональность на колесе камелота
+4. Есть рекомендации для добавления треков в плейлист на основе преобладающих тональностей в плейлисте
 
-### Make coverage report
-```shell
-> make cov
-```
+Пользовательский интерфейс должен содержать в себе распределение песен по тональностям колеса Камелота
+![img.png](static/img.png)
 
-### Formatting
+# Техническая составляющая
 
-```shell
-> pre-commit
-```
-
-## SQLAlchemy for asyncio context
-
-```python
-from core.db import Transactional, session
-
-
-@Transactional()
-async def create_user(self):
-    session.add(User(email="padocon@naver.com"))
-```
-
-Do not use explicit `commit()`. `Transactional` class automatically do.
-
-### Multiple databases
-
-Go to `core/config.py` and edit `WRITER_DB_URL` and `READER_DB_URL` in the config class.
-
-
-If you need additional logic to use the database, refer to the `get_bind()` method of `RoutingClass`.
-
-## Custom user for authentication
-
-```python
-from fastapi import Request
-
-
-@home_router.get("/")
-def home(request: Request):
-    return request.user.id
-```
-
-**Note. you have to pass jwt token via header like `Authorization: Bearer 1234`**
-
-Custom user class automatically decodes header token and store user information into `request.user`
-
-If you want to modify custom user class, you have to update below files.
-
-1. `core/fastapi/schemas/current_user.py`
-2. `core/fastapi/middlewares/authentication.py`
-
-### CurrentUser
-
-```python
-class CurrentUser(BaseModel):
-    id: int = Field(None, description="ID")
-```
-
-Simply add more fields based on your needs.
-
-### AuthBackend
-
-```python
-current_user = CurrentUser()
-```
-
-After line 18, assign values that you added on `CurrentUser`.
-
-## Top-level dependency
-
-**Note. Available from version 0.62 or higher.**
-
-Set a callable function when initialize FastAPI() app through `dependencies` argument.
-
-Refer `Logging` class inside of `core/fastapi/dependencies/logging.py`
-
-## Dependencies for specific permissions
-
-Permissions `IsAdmin`, `IsAuthenticated`, `AllowAll` have already been implemented.
-
-```python
-from core.fastapi.dependencies import (
-    PermissionDependency,
-    IsAdmin,
-)
-
-
-user_router = APIRouter()
-
-
-@user_router.get(
-    "",
-    response_model=List[GetUserListResponseSchema],
-    response_model_exclude={"id"},
-    responses={"400": {"model": ExceptionResponseSchema}},
-    dependencies=[Depends(PermissionDependency([IsAdmin]))],  # HERE
-)
-async def get_user_list(
-    limit: int = Query(10, description="Limit"),
-    prev: int = Query(None, description="Prev ID"),
-):
-    pass
-```
-Insert permission through `dependencies` argument.
-
-If you want to make your own permission, inherit `BasePermission` and implement `has_permission()` function.
-
-**Note. In order to use swagger's authorize function, you must put `PermissionDependency` as an argument of `dependencies`.**
-
-## Event dispatcher
-
-Refer the README of https://github.com/teamhide/fastapi-event
-
-## Cache
-
-### Caching by prefix
-```python
-from core.helpers.cache import Cache
-
-
-@Cache.cached(prefix="get_user", ttl=60)
-async def get_user():
-    ...
-```
-
-### Caching by tag
-```python
-from core.helpers.cache import Cache, CacheTag
-
-
-@Cache.cached(tag=CacheTag.GET_USER_LIST, ttl=60)
-async def get_user():
-    ...
-```
-
-Use the `Cache` decorator to cache the return value of a function.
-
-Depending on the argument of the function, caching is stored with a different value through internal processing.
-
-### Custom Key builder
-
-```python
-from core.helpers.cache.base import BaseKeyMaker
-
-
-class CustomKeyMaker(BaseKeyMaker):
-    async def make(self, function: Callable, prefix: str) -> str:
-        ...
-```
-
-If you want to create a custom key, inherit the BaseKeyMaker class and implement the make() method.
-
-### Custom Backend
-
-```python
-from core.helpers.cache.base import BaseBackend
-
-
-class RedisBackend(BaseBackend):
-    async def get(self, key: str) -> Any:
-        ...
-
-    async def set(self, response: Any, key: str, ttl: int = 60) -> None:
-        ...
-
-    async def delete_startswith(self, value: str) -> None:
-        ...
-```
-
-If you want to create a custom key, inherit the BaseBackend class and implement the `get()`, `set()`, `delete_startswith()` method.
-
-Pass your custom backend or keymaker as an argument to init. (`/app/server.py`)
-
-```python
-def init_cache() -> None:
-    Cache.init(backend=RedisBackend(), key_maker=CustomKeyMaker())
-```
-
-### Remove all cache by prefix/tag
-
-```python
-from core.helpers.cache import Cache, CacheTag
-
-
-await Cache.remove_by_prefix(prefix="get_user_list")
-await Cache.remove_by_tag(tag=CacheTag.GET_USER_LIST)
-```
+- БД может понадобиться для хранения списков id треков, включённых в отсортированный плейлист
+- Фронт делается на React отдельным проектом. Верстать на компонентах, стилизовать в процессе обучения. Про
+  взаимодействие с API на жабаскрипте мне ещё предстоит узнать.
