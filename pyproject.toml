@@ -29,6 +29,7 @@ httpx = "^0.26.0"
 soundcloud-lib = "^0.6.1"
 setuptools = "<57.5"
 black = "^24.3.0"
+pydub = "^0.25.1"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.4.4"
