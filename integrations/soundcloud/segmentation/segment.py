@@ -20,7 +20,7 @@ def cut_by_start_and_end(): ...
 
 
 def save_changed_track(changed_track: pydub.AudioSegment):
-    track.export(build_segmented_track_path(TRACK_NAME), format=TRACK_FILETYPE)
+    changed_track.export(build_segmented_track_path(TRACK_NAME), format=TRACK_FILETYPE)
 
 
 if __name__ == "__main__":
