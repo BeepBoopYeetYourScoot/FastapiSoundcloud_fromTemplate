@@ -1,7 +1,9 @@
-from integrations.conf import TRACK_SAVED_DIRECTORY, PLAYLIST_SAVED_DIRECTORY
-
-TRACK_FILETYPE = "mp3"
-NAME_SEPARATOR = " - "
+from integrations.conf import (
+    TRACK_SAVED_DIRECTORY,
+    PLAYLIST_SAVED_DIRECTORY,
+    NAME_SEPARATOR,
+    TRACK_FILETYPE,
+)
 
 
 def get_track_file_path(featured_track):

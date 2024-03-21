@@ -1,10 +1,9 @@
-import json
-from pathlib import Path
-
 import pydub
-from pydub import AudioSegment
 
-from integrations.conf import TRACK_SAVED_DIRECTORY, build_segmented_track_path
+from integrations.conf import TRACK_FILETYPE
+from integrations.soundcloud.saving.saved.tracks.segmented.scripts.builders import (
+    build_segmented_track_path,
+)
 from integrations.soundcloud.saving.saved.tracks.segmented.scripts.getters import (
     get_original_track_by_name,
 )
@@ -21,7 +20,7 @@ def cut_by_start_and_end(): ...
 
 
 def save_changed_track(changed_track: pydub.AudioSegment):
-    track.export(build_segmented_track_path(TRACK_NAME))
+    track.export(build_segmented_track_path(TRACK_NAME), format=TRACK_FILETYPE)
 
 
 if __name__ == "__main__":

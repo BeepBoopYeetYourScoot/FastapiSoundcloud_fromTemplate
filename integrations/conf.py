@@ -2,6 +2,10 @@ from pathlib import Path
 
 import loguru
 
+
+TRACK_FILETYPE = "mp3"
+NAME_SEPARATOR = " - "
+
 INTEGRATIONS_DIR = Path(__file__).parent
 BASE_DIR = INTEGRATIONS_DIR.parent
 SOUNDCLOUD_DIR = INTEGRATIONS_DIR / Path("soundcloud")
