@@ -10,8 +10,10 @@ SOUNDCLOUD_DIR = INTEGRATIONS_DIR / Path("soundcloud")
 TELEGRAM_DIR = INTEGRATIONS_DIR / Path("telegram")
 
 
-TRACK_SAVED_DIRECTORY = SOUNDCLOUD_DIR / Path("saving/saved") / Path("tracks")
-PLAYLIST_SAVED_DIRECTORY = SOUNDCLOUD_DIR / Path("saving/saved") / Path("playlists")
+TRACK_SAVED_DIRECTORY = SOUNDCLOUD_DIR / Path("saving") / Path("saved") / Path("tracks")
+PLAYLIST_SAVED_DIRECTORY = (
+    SOUNDCLOUD_DIR / Path("saving") / Path("saved") / Path("playlists")
+)
 
 
 if __name__ == "__main__":
