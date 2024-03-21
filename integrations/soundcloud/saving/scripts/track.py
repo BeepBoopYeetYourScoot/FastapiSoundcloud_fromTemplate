@@ -1,7 +1,7 @@
 import sclib
 from sclib import SoundcloudAPI
 
-from integrations.soundcloud.utils import get_track_filename
+from integrations.soundcloud.utils import get_track_file_path
 
 # do not pass a Soundcloud client ID that did not come from this library,
 # but you can save a client_id that this lib found and reuse it
@@ -18,7 +18,7 @@ track = sc_client.resolve(TRACK_LINK)
 
 
 def save_track(featured_track: sclib.Track):
-    filename = get_track_filename(featured_track)
+    filename = get_track_file_path(featured_track)
 
     assert type(featured_track) is sclib.Track
 

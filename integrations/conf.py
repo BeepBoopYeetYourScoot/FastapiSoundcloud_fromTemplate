@@ -1,8 +1,6 @@
 from pathlib import Path
-from pprint import pprint
 
 import loguru
-from pydantic_settings import BaseSettings
 
 INTEGRATIONS_DIR = Path(__file__).parent
 BASE_DIR = INTEGRATIONS_DIR.parent
@@ -11,6 +9,9 @@ TELEGRAM_DIR = INTEGRATIONS_DIR / Path("telegram")
 
 
 TRACK_SAVED_DIRECTORY = SOUNDCLOUD_DIR / Path("saving") / Path("saved") / Path("tracks")
+TRACK_SAVED_ORIGINAL = TRACK_SAVED_DIRECTORY / Path("original")
+TRACK_SAVED_SEGMENTED = TRACK_SAVED_DIRECTORY / Path("segmented") / Path("storage")
+
 PLAYLIST_SAVED_DIRECTORY = (
     SOUNDCLOUD_DIR / Path("saving") / Path("saved") / Path("playlists")
 )
