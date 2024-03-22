@@ -27,6 +27,7 @@ def split_track_in_two_halves(
 def cut_by_start_and_end(
     track: pydub.AudioSegment, start_ms=0, end_ms=None
 ) -> pydub.AudioSegment:
+    # FIXME unfinished endpoint
     starting_track_point = track[start_ms:]
     ending_track_point = track[:end_ms] if end_ms else ...
     return track
