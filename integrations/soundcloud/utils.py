@@ -1,3 +1,5 @@
+import uuid
+
 from integrations.conf import (
     TRACK_SAVED_DIRECTORY,
     PLAYLIST_SAVED_DIRECTORY,
@@ -8,6 +10,7 @@ from integrations.conf import (
 
 def get_track_file_path(featured_track):
     return (
+        f"{uuid.uuid4()}:"
         f"{TRACK_SAVED_DIRECTORY}/{featured_track.artist}"
         f"{NAME_SEPARATOR}"
         f"{featured_track.title}"
